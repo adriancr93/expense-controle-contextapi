@@ -1,69 +1,92 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# React
 
-Currently, two official plugins are available:
+## Context API
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Global state management without dependencies.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### What is Context API?
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+The Context API in React allows you to create a global state that can be accessed from any component, without the need to pass props through multiple component layers. This makes state management simpler for medium-sized applications and avoids "prop drilling".
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+The main hook to use Context is `useContext`.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Many libraries, such as Redux and Zustand, use Context API under the hood.
+
+---
+
+### Alternatives to Context API
+
+While Context API does not require external dependencies, its setup can be somewhat verbose. Alternatives include:
+
+- [Zustand](https://github.com/pmndrs/zustand)
+- [Redux Toolkit](https://redux-toolkit.js.org/)
+
+---
+
+## How to Use Context API in React
+
+### 1. Create a Context
+
+```tsx
+import React, { createContext, useContext, useState } from 'react';
+
+// Create the context
+const BudgetContext = createContext(null);
+
+// Create a provider component
+export const BudgetProvider = ({ children }) => {
+	const [budget, setBudget] = useState(0);
+	return (
+		<BudgetContext.Provider value={{ budget, setBudget }}>
+			{children}
+		</BudgetContext.Provider>
+	);
+};
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Wrap your app with the Provider
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```tsx
+// In src/main.tsx or App.tsx
+import { BudgetProvider } from './path/to/BudgetContext';
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+<BudgetProvider>
+	<App />
+</BudgetProvider>
 ```
+
+### 3. Consume Context with useContext
+
+```tsx
+import React, { useContext } from 'react';
+import { BudgetContext } from './path/to/BudgetContext';
+
+const BudgetForm = () => {
+	const { budget, setBudget } = useContext(BudgetContext);
+	return (
+		<div>
+			<input
+				type="number"
+				value={budget}
+				onChange={e => setBudget(Number(e.target.value))}
+			/>
+			<p>Current budget: ${budget}</p>
+		</div>
+	);
+};
+```
+
+---
+
+## Summary
+
+- Context API is built-in and dependency-free for global state management.
+- Use `createContext`, a Provider, and `useContext` to share state.
+- Best for medium-sized apps; for large apps, consider Redux Toolkit or Zustand.
+
+---
+
+> **Tip:** Always keep context logic simple and avoid storing large or frequently changing data in context to prevent unnecessary re-renders.
