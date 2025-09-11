@@ -1,3 +1,67 @@
+# JavaScript Function Types
+
+JavaScript supports several ways to define functions. Each has its own use case and syntax. Below are the main types, when to use them, and examples:
+
+## 1. Function Declaration
+**Use when:** You want a named function that is hoisted (can be called before its definition).
+```javascript
+function add(a, b) {
+	return a + b;
+}
+```
+
+## 2. Function Expression
+**Use when:** You need a function as a value (e.g., assign to a variable, pass as an argument). Not hoisted.
+```javascript
+const subtract = function(a, b) {
+	return a - b;
+};
+```
+
+## 3. Arrow Function
+**Use when:** You want a concise function, especially for callbacks. Does not have its own `this` context.
+```javascript
+const multiply = (a, b) => a * b;
+```
+
+## 4. Constructor Function
+**Use when:** You want to create objects using the `new` keyword (before ES6 classes).
+```javascript
+function Person(name) {
+	this.name = name;
+}
+const user = new Person('Alice');
+```
+
+## 5. Method in Object
+**Use when:** You want to define functions as object properties (methods).
+```javascript
+const obj = {
+	greet() {
+		return 'Hello';
+	}
+};
+```
+
+## 6. Class Method
+**Use when:** You are working with ES6 classes and want to define methods.
+```javascript
+class Calculator {
+	sum(a, b) {
+		return a + b;
+	}
+}
+```
+
+## TypeScript Function Types
+**Use when:** You want to specify function types explicitly for type safety.
+```typescript
+type AddFn = (a: number, b: number) => number;
+const add: AddFn = (a, b) => a + b;
+```
+
+---
+Choose the function type based on your needs: hoisting, context, object-oriented design, or type safety.
 
 # React
 
@@ -90,3 +154,4 @@ const BudgetForm = () => {
 ---
 
 > **Tip:** Always keep context logic simple and avoid storing large or frequently changing data in context to prevent unnecessary re-renders.
+
